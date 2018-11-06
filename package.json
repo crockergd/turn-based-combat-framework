@@ -1,0 +1,15 @@
+{
+    "name": "turn-based-combat-framework",
+    "version": "0.0.1",
+    "author": "g.crocker3@gmail.com",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "scripts": {
+        "start": "tsc",
+        "deploy": "tsc && npm link"
+    },
+    "dependencies": {},
+    "devDependencies": {
+        "typescript": "^3.1.3"
+    }
+}
