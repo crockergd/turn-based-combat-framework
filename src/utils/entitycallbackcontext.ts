@@ -1,14 +1,14 @@
-import BaseEntity from '../entities/baseentity';
+import Entity from '../entities/entity';
 
 /**
  * Helper class to encapsulate an entity callback + context
  */
 export default class EntityCallbackContext {
-    public callback: (entity: BaseEntity, partial: boolean) => any;
+    public callback: (entity: Entity, partial: boolean) => any;
     public context: any;
     public priority: number;
 
-    public constructor(callback: (entity: BaseEntity, partial: boolean) => any, context: any, priority: number) {
+    public constructor(callback: (entity: Entity, partial: boolean) => any, context: any, priority: number) {
         this.callback = callback;
         this.context = context;
         this.priority = priority;

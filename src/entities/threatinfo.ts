@@ -1,5 +1,5 @@
-import BaseEntity from "./baseentity";
+import Entity from "./entity";
 
 export default interface ThreatInfo {
-    targets: Array<[BaseEntity, number]>;
+    targets: Array<[Entity, number]>;
 }

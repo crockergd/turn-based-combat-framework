@@ -1,5 +1,5 @@
-import BaseEntity from '../../entities/baseentity';
+import Entity from '../../entities/entity';
 
 export default interface TargetSpecification {
-    source: BaseEntity;
+    source: Entity;
  }

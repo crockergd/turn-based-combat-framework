@@ -1,20 +1,17 @@
-import BaseEntity from '../entities/baseentity';
+import Entity from '../entities/entity';
 import Resoluble from './resolubles/resoluble';
-import PreturnSnapshot from './preturnsnapshot';
 
 /**
  * Object representing the actions of a turn for a single entity
  */
 export default class Turn {
-    public entity: BaseEntity;
-    public preturn_snapshot: PreturnSnapshot;
+    public entity: Entity;
     private direct_resolubles: Array<Resoluble>;
     private index: number;
     public resolved: boolean;
 
-    constructor(entity: BaseEntity, preturn_snapshot: PreturnSnapshot) {
+    constructor(entity: Entity) {
         this.entity = entity;
-        this.preturn_snapshot = preturn_snapshot;
         this.direct_resolubles = new Array<Resoluble>();
         this.index = 0;
         this.resolved = false;
@@ -49,8 +46,7 @@ export default class Turn {
 
     public toJSON(): any {
         let json: any = {
-            entity: this.entity ? this.entity.targetting_key : null,
-            preturn_snapshot: this.preturn_snapshot,
+            entity: this.entity ? this.entity.key : null,
             direct_resolubles: this.direct_resolubles.filter(resoluble => !resoluble.chained),
             resolved: this.resolved
         };

@@ -1,7 +1,5 @@
-import BaseEntity from './baseentity';
-import Team from './team';
+import Entity from './entity';
 import Status from '../turns/status';
-import { EntityRelation } from './entityrelation';
 
 /**
  * Encapsulates and exposes the state of a battle
@@ -9,73 +7,54 @@ import { EntityRelation } from './entityrelation';
 export default class Field {
     private speed_priority: number;
 
-    public entities: Array<BaseEntity>;
+    public entities: Array<Entity>;
     public status_priority: number;
-    public expired_statuses: Array<Status>;
     public team_wiped: boolean;
-    public team_defeated: Team;
+    public team_defeated: number;
 
     constructor() {
-        this.entities = new Array<BaseEntity>();
+        this.entities = new Array<Entity>();
         this.speed_priority = 0;
         this.status_priority = 0;
-        this.expired_statuses = new Array<Status>();
     }
 
-    public add_entities(entities: Array<BaseEntity>): void {
+    public add_entities(entities: Array<Entity>): void {
         for (let entity of entities) {
             this.add_entity(entity);
         }
     }
 
-    public add_entity(entity: BaseEntity): void {
-        entity.priority = this.speed_priority++;
+    public add_entity(entity: Entity): void {
+        entity.identifier.priority = this.speed_priority++;
         // entity.name.toLowerCase() + '-' + 
-        entity.targetting_key = entity.priority.toString();
+        entity.identifier.key = entity.identifier.priority.toString();
         this.entities.push(entity);
     }
 
-    public get_entities(team?: Team, alive?: boolean, excluded_entity?: BaseEntity): Array<BaseEntity> {
-        let entities: Array<BaseEntity> = this.entities;
+    public get_entities(team?: number, alive?: boolean, excluded_entity?: Entity): Array<Entity> {
+        let entities: Array<Entity> = this.entities;
 
         if (team || team === 0) {
             entities = entities.filter((entity) => {
-                return entity.team === team;
+                return entity.identifier.team === team;
             });
         }
 
         if (alive || alive === false) {
             entities = entities.filter((entity) => {
-                return entity.battle_info.alive === alive;
+                return entity.combat.alive === alive;
             });
         }
 
         if (excluded_entity) {
-            entities = entities.filter(entity => entity.targetting_key !== excluded_entity.targetting_key);
+            entities = entities.filter(entity => entity.key !== excluded_entity.key);
         }
 
         return entities;
     }
 
-    public get_entity(targetting_key: string): BaseEntity {
-        return this.entities.find(entity => entity.targetting_key === targetting_key);
-    }
-
-    public get_entity_by_relation(relation: EntityRelation, related_entity?: BaseEntity): BaseEntity {
-        switch (relation) {
-            case EntityRelation.NEAREST:
-                if (this.entities.length > related_entity.priority) {
-                    const incremented_entity: BaseEntity = this.entities.find(entity => entity.priority === related_entity.priority + 1);
-                    if (incremented_entity.team === related_entity.team && incremented_entity.battle_info.alive) return incremented_entity;
-                }
-
-                if (related_entity.priority > 0) {
-                    const decremented_entity: BaseEntity = this.entities.find(entity => entity.priority === related_entity.priority - 1);
-                    if (decremented_entity.team === related_entity.team && decremented_entity.battle_info.alive) return decremented_entity;
-                }
-
-                return null;
-        }
+    public get_entity(targetting_key: string): Entity {
+        return this.entities.find(entity => entity.key === targetting_key);
     }
 
     /**
@@ -83,9 +62,9 @@ export default class Field {
      * 
      * @param team - Team of the newly deceased entity
      */
-    public resolve_entity_death(team: Team): void {
+    public resolve_entity_death(team: number): void {
         let enemies_remaining: number = this.entities.filter((o) => {
-            return o.team === team && o.battle_info.alive;
+            return o.team === team && o.combat.alive;
         }).length;
 
         if (!(enemies_remaining > 0)) {
@@ -94,19 +73,27 @@ export default class Field {
         }
     }
 
-    public reorder(): void {
-        this.entities = this.entities.sort(this.entity_compare);
+    public toJSON(): any {
+        const json: any = {
+            entities: this.entities,
+            speed_priority: this.speed_priority,
+            status_priority: this.status_priority,
+            team_wiped: this.team_wiped,
+            team_defeated: this.team_defeated
+        };
+
+        return json;
     }
 
-    public entity_compare(lhs: BaseEntity, rhs: BaseEntity): number {
-        if (lhs.speed_required < rhs.speed_required) {
-            return -1;
-        }
+    public static fromJSON(json: any): Field {
+        const field: Field = new Field();
 
-        if (lhs.speed_required > rhs.speed_required) {
-            return 1;
-        }
+        field.entities = json.entities.map(entity_json => Entity.fromJSON(entity_json));
+        field.speed_priority = json.speed_priority;
+        field.status_priority = json.status_priority;
+        field.team_wiped = json.team_wiped;
+        field.team_defeated = json.team_defeated;
 
-        return 0;
+        return field;
     }
 }

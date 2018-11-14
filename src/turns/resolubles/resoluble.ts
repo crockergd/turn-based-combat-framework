@@ -8,7 +8,7 @@ export default abstract class Resoluble {
     public tags: Array<string>;
     
     public index?: number;
-    public abstract resolve(field: Field, turn_context: any, render_context: any, data_context: any, hook_context?: any): void;
+    public abstract resolve(field: Field, turn_context: any, render_context: any, hook_context?: any): void;
     public abstract undo(): void;    
 
     constructor() {
