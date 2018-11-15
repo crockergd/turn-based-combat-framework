@@ -19,15 +19,21 @@ export default class Entity {
         return this.identifier.team;
     }
 
+    public get alive(): boolean {
+        return this.combat.alive;
+    }
+
     constructor() {
         this.identifier = {};
         this.stat = {};
-        this.combat = {};
+        this.combat = {
+            alive: true
+        };
         this.spatial = {};
         this.properties = new Map<string, any>();
     }
 
-    public get(key: string): any {
+    public get<T>(key: string): any {
         const custom: CustomProperty = this.properties.get(key);
         return custom.property;
     }

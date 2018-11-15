@@ -1,5 +1,6 @@
 import Entity from './entity';
 import Status from '../turns/status';
+import Vector from '../utils/vector';
 
 /**
  * Encapsulates and exposes the state of a battle
@@ -55,6 +56,14 @@ export default class Field {
 
     public get_entity(targetting_key: string): Entity {
         return this.entities.find(entity => entity.key === targetting_key);
+    }
+
+    public get_entity_by_position(position: Vector): Entity {
+        for (const entity of this.entities) {
+            if (entity.spatial.position.x === position.x && entity.spatial.position.y === position.y && entity.spatial.position.z === position.z) return entity;
+        }
+
+        return null;
     }
 
     /**

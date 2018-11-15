@@ -6,6 +6,7 @@ import Resoluble from './turns/resolubles/resoluble';
 import RenderContext from './contexts/rendercontext';
 import HookContext from './contexts/hookcontext';
 import * as Resolubles from './turns/resolubles';
+import SerializedProperty from './utils/serializedproperty';
 
 export default class Battle {
     private field: Field;
@@ -61,14 +62,69 @@ export default class Battle {
     }
 
     public call_resoluble(key: string, delayed: boolean, ...args: any[]): void {
+        this.turn_context.call_resoluble(key, delayed, ...args);
+    }
+
+    public serialize_resoluble(key: string, ...args: any[]): any {
         const resoluble_type: any = this.resoluble_types.find(type => type.name === key);
         const resoluble: any = resoluble_type.prototype.constructor.call(new resoluble_type(), ...args);
+
+        return JSON.stringify(resoluble);
+    }
+
+    public deserialize_resoluble(resoluble_json: any, delayed: boolean = true, parse: boolean = true): void {
+        let resoluble_obj: any;
+
+        if (parse) {
+            resoluble_obj = JSON.parse(resoluble_json);
+        } else {
+            resoluble_obj = resoluble_json;
+        }
+
+        for (const [key, value] of Object.entries(resoluble_obj)) {
+            if ((value as any).inflation_type) {
+                const serialized_property: SerializedProperty = value as SerializedProperty;
+
+                switch (serialized_property.inflation_type) {
+                    case 'Entity':
+                        resoluble_obj[key] = this.field.get_entity(serialized_property.property);
+                        break;
+                }
+            }
+        }
+
+        const resoluble_type: any = this.resoluble_types.find(type => type.name === resoluble_obj.type);
+        const resoluble: any = resoluble_type.fromJSON(resoluble_obj);
 
         if (delayed) {
             this.turn_context.add_delayed_resoluble(resoluble);
         } else {
             this.turn_context.add_direct_resoluble(resoluble);
         }
+    }
+
+    public serialize_turn(): any {
+        return JSON.stringify(this.turn_context.active_turn);
+    }
+
+    public deserialize_turn(turn_json: any): void {
+        const turn_obj: any = JSON.parse(turn_json);
+
+        this.turn_context.request_turn_start();
+
+        for (const resoluble of turn_obj.direct_resolubles) {
+            this.deserialize_resoluble(resoluble, false, false);
+        }
+
+        this.turn_context.request_turn_end(false);
+    }
+
+    public get_delayed_resolubles(): Array<Resoluble> {
+        return this.turn_context.delayed_resolubles;
+    }
+
+    public get_last_turn(): Array<Resoluble> {
+        return this.turn_context.last_turn.resolubles;
     }
 
     public add_delayed_resoluble(resoluble: Resoluble): void {
@@ -86,7 +142,7 @@ export default class Battle {
     private direct_resoluble_added(resoluble: Resoluble): void {
         resoluble.resolve(this.field, this.turn_context, this.render_context, this.hook_context);
     }
-    
+
     public toJSON(): any {
         const json: any = {
             tick_mode: this.tick_mode,

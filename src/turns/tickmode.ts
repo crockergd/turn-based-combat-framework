@@ -1,6 +1,7 @@
 export const enum TickMode {
-    ASYNC = 0,
-    SYNC = 1
+    NONE = 0,
+    ASYNC = 1,
+    SYNC = 2
 }
 
 export default TickMode;

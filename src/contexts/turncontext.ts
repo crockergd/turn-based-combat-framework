@@ -5,6 +5,7 @@ import Turn from '../turns/turn';
 import Field from '../entities/field';
 import Status from '../turns/status';
 import TickMode from '../turns/tickmode';
+import * as Resolubles from '../turns/resolubles';
 import TickCallbackContext from '../utils/tickcallbackcontext';
 
 /**
@@ -24,7 +25,7 @@ export default class TurnContext {
     private direct_resoluble_added_callback: (resoluble: Resoluble) => any;
     private direct_resoluble_added_context: any;
 
-    private delayed_resolubles: Array<Resoluble>;
+    public delayed_resolubles: Array<Resoluble>;
 
     private async_interval: number = 3.0;
     private async_time: number;
@@ -57,10 +58,9 @@ export default class TurnContext {
         return this.turns[this.turns.length - 1];
     }
 
-    public get active_entity(): Entity | null {
-        let turn: Turn = this.active_turn;
-        if (turn && turn.entity) return turn.entity;
-        return null;
+    public get last_turn(): Turn | null {
+        if (!(this.turns.length > 0)) return null;
+        return this.turns[this.turns.length - 1];
     }
 
     public get turn_interval(): number {
@@ -76,6 +76,8 @@ export default class TurnContext {
      */
     public update(dt: number): void {
         switch (this.tick_mode) {
+            case TickMode.NONE:
+                break;
             case TickMode.ASYNC:
                 this.update_async(dt);
                 break;
@@ -132,7 +134,7 @@ export default class TurnContext {
     /**
      * Begin a new turn for a given entity
      */
-    public request_turn_start(entity: Entity): void {
+    public request_turn_start(entity?: Entity): void {
         this.reset(); // prevent time from flowing for other entities until turn is resolved
 
         this.turns.push(new Turn(entity)); // snapshot state and begin a new turn
@@ -195,6 +197,17 @@ export default class TurnContext {
         if (flag_chained) resoluble.flag_chained();
 
         this.delayed_resolubles.push(resoluble);
+    }
+
+    public call_resoluble(key: string, delayed: boolean, ...args: any[]): void {
+        const resoluble_type: any = Object.values(Resolubles).find(type => type.name === key);
+        const resoluble: any = resoluble_type.prototype.constructor.call(new resoluble_type(), ...args);
+
+        if (delayed) {
+            this.add_delayed_resoluble(resoluble);
+        } else {
+            this.add_direct_resoluble(resoluble);
+        }
     }
 
     /**
