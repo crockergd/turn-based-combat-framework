@@ -42,16 +42,9 @@ export default abstract class Resoluble {
             index: this.index,
             silenced: this.silenced,
             type: this.type,
-            tags: this.tags,
-            priority: this.priority,
-            timestamp: this.timestamp
+            tags: this.tags
         };
 
         return json;
-    }
-
-    public fromJSON(json: any): any {
-        this.priority = json.priority;
-        this.timestamp = json.timestamp;
     }
 }

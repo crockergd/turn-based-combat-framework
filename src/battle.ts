@@ -62,7 +62,7 @@ export default class Battle {
     }
 
     public call_resoluble(key: string, delayed: boolean, ...args: any[]): void {
-        this.turn_context.call_resoluble(key, delayed, ...args);
+        this.turn_context.call_resoluble(key, delayed, false,  ...args);
     }
 
     public serialize_resoluble(key: string, ...args: any[]): any {
@@ -117,6 +117,14 @@ export default class Battle {
         }
 
         this.turn_context.request_turn_end(false);
+    }
+
+    public get_team_wiped(): boolean {
+        return this.field.team_wiped;
+    }
+
+    public get_team_defeated(): number {
+        return this.field.team_defeated;
     }
 
     public get_delayed_resolubles(): Array<Resoluble> {

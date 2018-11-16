@@ -63,12 +63,6 @@ export default class Attack extends Resoluble {
                 second_position = new Vector(initial_position.x, initial_position.y - 1, initial_position.z);
             }
 
-            // if (horizontal) {
-            //     second_position = new Vector(initial_position.x + 1, initial_position.y, initial_position.z);
-            // } else {
-            //     second_position = new Vector(initial_position.x, initial_position.y + 1, initial_position.z);
-            // }
-
             this.targetted_positions.push(initial_position);
             this.targetted_positions.push(second_position);
         }
@@ -82,11 +76,10 @@ export default class Attack extends Resoluble {
         }
 
         for (const entity of targets) {
-            turn_context.call_resoluble('Damage', true, this.source, entity, 1);
-            // console.log(entity);
-        }
+            if (!entity.alive) continue;
 
-        // this.source.set('dirty', true);
+            turn_context.call_resoluble('Damage', true, true, this.source, entity, 1);
+        }
     }
 
     public toJSON(): any {

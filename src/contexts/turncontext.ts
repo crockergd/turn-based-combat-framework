@@ -165,6 +165,8 @@ export default class TurnContext {
         }
 
         if (this.delayed_resolubles && this.delayed_resolubles.length) {
+            this.delayed_resolubles = this.delayed_resolubles.filter(resoluble => resoluble.active);
+
             for (const resoluble of this.delayed_resolubles) {
                 this.add_direct_resoluble(resoluble);
             }
@@ -199,14 +201,14 @@ export default class TurnContext {
         this.delayed_resolubles.push(resoluble);
     }
 
-    public call_resoluble(key: string, delayed: boolean, ...args: any[]): void {
+    public call_resoluble(key: string, delayed: boolean, chained: boolean, ...args: any[]): void {
         const resoluble_type: any = Object.values(Resolubles).find(type => type.name === key);
         const resoluble: any = resoluble_type.prototype.constructor.call(new resoluble_type(), ...args);
 
         if (delayed) {
-            this.add_delayed_resoluble(resoluble);
+            this.add_delayed_resoluble(resoluble, chained);
         } else {
-            this.add_direct_resoluble(resoluble);
+            this.add_direct_resoluble(resoluble, chained);
         }
     }
 

@@ -5,7 +5,7 @@ import TurnContext from '../../contexts/turncontext';
 import SerializedProperty from '../../utils/serializedproperty';
 
 export default class Death extends Resoluble {
-    private target: Entity;
+    public target: Entity;
 
     constructor(target: Entity) {
         super();
@@ -17,8 +17,6 @@ export default class Death extends Resoluble {
 
     public resolve(field: Field, turn_context: TurnContext): void {
         this.target.combat.alive = false;
-
-        console.log(this.target.key + ' died.');
 
         field.resolve_entity_death(this.target.team);
 
