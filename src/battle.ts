@@ -7,6 +7,7 @@ import RenderContext from './contexts/rendercontext';
 import HookContext from './contexts/hookcontext';
 import * as Resolubles from './turns/resolubles';
 import SerializedProperty from './utils/serializedproperty';
+import Vector from './utils/vector';
 
 export default class Battle {
     private field: Field;
@@ -133,6 +134,10 @@ export default class Battle {
 
     public get_last_turn(): Array<Resoluble> {
         return this.turn_context.last_turn.resolubles;
+    }
+
+    public get_entity_by_position(position: Vector): Entity { 
+        return this.field.get_entity_by_position(position);
     }
 
     public add_delayed_resoluble(resoluble: Resoluble): void {

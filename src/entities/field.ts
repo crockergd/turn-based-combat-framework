@@ -65,7 +65,7 @@ export default class Field {
 
         return null;
     }
-
+    
     /**
      * Verifies if the battle has ended after an entity dies
      * 

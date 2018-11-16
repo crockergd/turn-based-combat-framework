@@ -37,6 +37,10 @@ export default abstract class Resoluble {
         this.chained = true;
     }
 
+    public invalidate(): void {
+        this.active = false;
+    }
+
     public toJSON(): any {
         let json: any = {
             index: this.index,
