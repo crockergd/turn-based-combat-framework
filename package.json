@@ -1,7 +1,11 @@
 {
     "name": "turn-based-combat-framework",
     "version": "0.0.1",
-    "author": "g.crocker3@gmail.com",
+    "author": "George Crocker <g.crocker3@gmail.com>",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/rekys/turn-based-combat-framework.git"
+    },
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
     "scripts": {
