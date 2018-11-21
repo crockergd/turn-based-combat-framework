@@ -33,8 +33,10 @@ export default class Entity {
         this.properties = new Map<string, any>();
     }
 
-    public get<T>(key: string): any {
+    public get(key: string): any {
         const custom: CustomProperty = this.properties.get(key);
+        if (!custom) return null;
+
         return custom.property;
     }
 

@@ -34,7 +34,7 @@ export default class Attack extends Resoluble {
             horizontal = false;
         }
 
-        if (this.source.identifier.class_key === 'bandit') {
+        if (this.source.identifier.class_key === 'sword_unit') {
             let second_position: Vector;
             let third_position: Vector;
 
@@ -50,7 +50,7 @@ export default class Attack extends Resoluble {
             this.targetted_positions.push(second_position);
             this.targetted_positions.push(third_position);
 
-        } else if (this.source.identifier.class_key === 'spearman') {
+        } else if (this.source.identifier.class_key === 'spear_unit') {
             let second_position: Vector;
 
             if (this.source.spatial.facing.x > 0 && this.source.spatial.facing.y > 0) {
@@ -65,6 +65,18 @@ export default class Attack extends Resoluble {
 
             this.targetted_positions.push(initial_position);
             this.targetted_positions.push(second_position);
+        } else if (this.source.identifier.class_key === 'bow_unit') {
+            if (this.source.spatial.facing.x > 0 && this.source.spatial.facing.y > 0) {
+                initial_position.y += 2; // = new Vector(initial_position.x, initial_position.y + 1, initial_position.z);
+            } else if (this.source.spatial.facing.x > 0 && this.source.spatial.facing.y < 0) {
+                initial_position.x += 2; // = new Vector(initial_position.x + 1, initial_position.y, initial_position.z);
+            } else if (this.source.spatial.facing.x < 0 && this.source.spatial.facing.y > 0) {
+                initial_position.x -= 2; // = new Vector(initial_position.x - 1, initial_position.y, initial_position.z);
+            } else if (this.source.spatial.facing.x < 0 && this.source.spatial.facing.y < 0) {
+                initial_position.y -= 2; // = new Vector(initial_position.x, initial_position.y - 1, initial_position.z);
+            }
+
+            this.targetted_positions.push(initial_position);
         }
 
         const targets: Entity[] = [];
