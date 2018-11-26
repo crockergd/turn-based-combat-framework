@@ -124,8 +124,8 @@ export default class Battle {
         return this.field.team_wiped;
     }
 
-    public get_team_defeated(): number {
-        return this.field.team_defeated;
+    public get_teams_defeated(): Array<number> {
+        return this.field.teams_defeated;
     }
 
     public get_delayed_resolubles(): Array<Resoluble> {

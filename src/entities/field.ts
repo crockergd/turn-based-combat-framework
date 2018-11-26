@@ -11,12 +11,14 @@ export default class Field {
     public entities: Array<Entity>;
     public status_priority: number;
     public team_wiped: boolean;
-    public team_defeated: number;
+    public teams_defeated: Array<number>;
 
     constructor() {
         this.entities = new Array<Entity>();
         this.speed_priority = 0;
         this.status_priority = 0;
+
+        this.teams_defeated = new Array<number>();
     }
 
     public add_entities(entities: Array<Entity>): void {
@@ -78,7 +80,7 @@ export default class Field {
 
         if (!(enemies_remaining > 0)) {
             this.team_wiped = true;
-            this.team_defeated = team;
+            this.teams_defeated.push(team);
         }
     }
 
@@ -88,7 +90,7 @@ export default class Field {
             speed_priority: this.speed_priority,
             status_priority: this.status_priority,
             team_wiped: this.team_wiped,
-            team_defeated: this.team_defeated
+            teams_defeated: this.teams_defeated
         };
 
         return json;
@@ -101,7 +103,7 @@ export default class Field {
         field.speed_priority = json.speed_priority;
         field.status_priority = json.status_priority;
         field.team_wiped = json.team_wiped;
-        field.team_defeated = json.team_defeated;
+        field.teams_defeated = json.teams_defeated;
 
         return field;
     }
