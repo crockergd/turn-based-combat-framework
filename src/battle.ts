@@ -144,6 +144,14 @@ export default class Battle {
         this.turn_context.add_delayed_resoluble(resoluble);
     }
 
+    public get_async_interval(): number {
+        return this.turn_context.async_interval;
+    }
+
+    public set_async_interval(interval: number): void {
+        this.turn_context.async_interval = interval;
+    }
+
     public register_pre_tick_callback(callback: any, context?: any): void {
         this.turn_context.register_pre_tick_callback(callback, context);
     }

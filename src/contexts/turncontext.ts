@@ -27,7 +27,7 @@ export default class TurnContext {
 
     public delayed_resolubles: Array<Resoluble>;
 
-    private async_interval: number = 3.0;
+    public async_interval: number = 3.0;
     private async_time: number;
     private async_last_turn: number;
 

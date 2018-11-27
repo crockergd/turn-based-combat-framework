@@ -75,7 +75,7 @@ export default class Field {
      */
     public resolve_entity_death(team: number): void {
         let enemies_remaining: number = this.entities.filter((o) => {
-            return o.team === team && o.combat.alive;
+            return o.team === team && o.alive;
         }).length;
 
         if (!(enemies_remaining > 0)) {
