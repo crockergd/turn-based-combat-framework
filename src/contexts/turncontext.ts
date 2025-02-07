@@ -88,7 +88,7 @@ export default class TurnContext {
     }
 
     private update_async(dt: number): void {
-        
+
     }
 
     private update_sync(dt: number): void {
@@ -116,14 +116,14 @@ export default class TurnContext {
         this.pre_tick_callbacks.push({
             callback: callback,
             context: context
-        });    
+        });
     }
 
     public register_post_tick_callback(callback: any, context: any): void {
         this.post_tick_callbacks.push({
             callback: callback,
             context: context
-        });    
+        });
     }
 
     public register_direct_resoluble_added_callback(callback: (resoluble: Resoluble) => any, context: any): void {
@@ -159,9 +159,9 @@ export default class TurnContext {
     /**
      * End the current turn
      */
-    public request_turn_end(partial: boolean): void {        
+    public request_turn_end(partial: boolean): void {
         for (const tick_callback of this.pre_tick_callbacks) {
-            tick_callback.callback.call(tick_callback.context);
+            tick_callback.callback.call(tick_callback.context, undefined);
         }
 
         if (this.delayed_resolubles && this.delayed_resolubles.length) {
